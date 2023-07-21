@@ -1,7 +1,7 @@
 # PMW3389 Module Library for Arduino
 
 This library allows an Arduino board to easily communicate with PMW3389 Module.
-This library is a copy version of sunjun Kim's pwm3360-master, which is made to correspond to the 3389.
+This library is a copy version of Sunjun Kim's pwm3360-master, which is made to correspond to the 3389.
 This library is designed for https://www.tindie.com/products/jkicklighter/pmw3389-motion-sensor/
 However, other setup will also work (e.g., https://easyeda.com/Justice/New_Project-cc5450b338fd4d55bef91ec37025ab6a).
 
