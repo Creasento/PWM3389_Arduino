@@ -1,0 +1,6 @@
+{
+    "configuration": "cpu=16MHzatmega32U4",
+    "board": "SparkFun:avr:promicro",
+    "sketch": "PMW3389_dualsensor.ino",
+    "port": "COM46"
+}

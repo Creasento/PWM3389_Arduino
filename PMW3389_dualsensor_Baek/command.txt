@@ -1,0 +1,3 @@
+cat /dev/cu.usbmodemHIDHE1 > test_log.csv
+
+press Ctrl+| to exit
