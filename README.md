@@ -40,7 +40,7 @@ Disclaimer: This is not a PixArt official library. USE AT YOUR OWN RISK.
 
 # License
 
-Copyright (c) Minhyeok Baek. All right reserved.
+Copyright (c) Minhyeok Baek, Sunjun Kim. All right reserved.
 
 This library is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public
@@ -59,3 +59,5 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
 # Update log
 * v1.0.0
   * Initial release
+* v1.1.0
+  * Wheel code added
