@@ -54,7 +54,6 @@ LocalTime prev_time;
 LocalTime curr_time;
 long taken;
 
-
 void setup() {
 
   LocalDateTime now = LocalDateTime.now();
@@ -451,7 +450,6 @@ void StopLogging(PrintWriter pw) {
 
   pw = null;
 }
-
 
 void keyPressed() {
 
