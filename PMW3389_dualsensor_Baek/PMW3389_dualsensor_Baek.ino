@@ -17,8 +17,8 @@
 #endif
 
 // User define values
-#define DEFAULT_CPI  1600
-#define SENSOR_DISTANCE 72  // in mm
+#define DEFAULT_CPI  800
+#define SENSOR_DISTANCE 50.83  // in mm
 
 #define MAX_CPI  16000
 
@@ -71,7 +71,7 @@ enum PinAssignments {
 volatile int encoderPos = 0;  // a counter for the dial
 volatile unsigned int lastScrollStableState = 0;
 volatile unsigned int lastScrollTransitState = 0;
-int scrollStep = 3;
+int scrollStep = 1;
 
 // interrupt service routine vars
 
@@ -169,8 +169,8 @@ void loop() {
     float rat = posRatio / 100.0;
 
     // dx and dy are calculated in MAX_CPI
-    float dx = (data1.dx + data2.dx) / 2.0 + remain_dx;
-    float dy = (data1.dy + data2.dy) / 2.0 + remain_dy;
+    float dx = (data1.dx + data2.dx) / rat + remain_dx;
+    float dy = (data1.dy + data2.dy) / rat + remain_dy;
 
     data.isMotion = (dx != 0) || (dy != 0);
 
@@ -184,7 +184,7 @@ void loop() {
     data.dx = mdx;
     data.dy = mdy;
 
-    data.SQUAL = (data1.SQUAL + data2.SQUAL) / 2;
+    data.SQUAL = (data1.SQUAL + data2.SQUAL) / rat;
 
     //data.dx = data1.dx + data2.dx;
     //data.dy = data1.dy + data2.dy;
@@ -249,7 +249,7 @@ void loop() {
     {
       //if (AdvMouse.needSendReport() && !data.isMotion)
       //  Serial.println("Btn report");
-      int wheel = (encoderPos == 0)? 0 : (encoderPos > 0 ? scrollStep : -scrollStep);
+      int wheel = (encoderPos == 0) ? 0 : (encoderPos > 0 ? scrollStep : -scrollStep);
       AdvMouse.move(data.dx, data.dy, wheel);
     }
     encoderPos = 0; // Reset position after scrolling
@@ -259,7 +259,7 @@ void loop() {
       signed char mdx = constrain(data.d  x, -127, 127);
       signed char mdy = constrain(data.dy, -127, 127);
 
-      int wheel = (encoderPos == 0)? 0 : (encoderPos > 0 ? scrollStep : -scrollStep);
+      int wheel = (encoderPos == 0) ? 0 : (encoderPos > 0 ? scrollStep : -scrollStep);
 
       Mouse.move(mdx, mdy, wheel);
     }
@@ -421,16 +421,16 @@ unsigned long readNumber()
 //  wheel down:
 //   0 0 > 1 0 > 1 1   (=0-2-3)  or   1 1 > 0 1 > 0 0 (=3-1-0)
 void doEncoder() {
-    bool encA = (PIND & PINA_BIT) != 0;
-    bool encB = (PIND & PINB_BIT) != 0;
-    int scrollState = encA | encB<<1;  // state: 00: 0 / 01: 1 / 10: 2 / 11: 3
+  bool encA = (PIND & PINA_BIT) != 0;
+  bool encB = (PIND & PINB_BIT) != 0;
+  int scrollState = encA | encB << 1; // state: 00: 0 / 01: 1 / 10: 2 / 11: 3
 
-    int scroll = 0;
-    if (lastScrollStableState != scrollState && scrollState == 0) scroll = lastScrollTransitState==1? -1 : 1;   // 3->?->0
-    if (lastScrollStableState != scrollState && scrollState == 3) scroll = lastScrollTransitState==1? 1 : -1;   // 0->?->3
+  int scroll = 0;
+  if (lastScrollStableState != scrollState && scrollState == 0) scroll = lastScrollTransitState == 1 ? -1 : 1; // 3->?->0
+  if (lastScrollStableState != scrollState && scrollState == 3) scroll = lastScrollTransitState == 1 ? 1 : -1; // 0->?->3
 
-    encoderPos -= scroll;
+  encoderPos -= scroll;
 
-    if (scrollState == 0 || scrollState == 3) lastScrollStableState = scrollState;
-    if (scrollState == 1 || scrollState == 2) lastScrollTransitState = scrollState;
+  if (scrollState == 0 || scrollState == 3) lastScrollStableState = scrollState;
+  if (scrollState == 1 || scrollState == 2) lastScrollTransitState = scrollState;
 }
