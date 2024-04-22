@@ -80,6 +80,9 @@
 #define REG_Lift_Config 0x63
 #define REG_Raw_Data_Burst  0x64
 #define REG_LiftCutoff_Tune2  0x65
+#define Resolution_L 0x0E
+#define Resolution_H 0x0F
+
 
 /*
 Raw burst data structure: 

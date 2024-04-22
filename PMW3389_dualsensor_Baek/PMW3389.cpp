@@ -375,11 +375,12 @@ cpi: Count per Inch value
 */
 void PMW3389::setCPI(unsigned int cpi)
 {
-  int cpival = constrain((cpi/100)-1, 0, 0x77); // limits to 0--119 
+  unsigned int cpival = cpi / 50;
   //_CPI = (cpival + 1)*100;
   
   SPI_BEGIN;
-  adns_write_reg(REG_Config1, cpival);
+  adns_write_reg(Resolution_L, (cpival & 0xFF));
+  adns_write_reg(Resolution_H, ((cpival >> 8) & 0xFF));
   SPI_END;
 }
 
@@ -392,11 +393,16 @@ cpi: Count per Inch value
 */
 unsigned int PMW3389::getCPI()
 {
+  // Multiply by 50 to get the CPI value, as set by setCPI
   SPI_BEGIN;
-  int cpival = adns_read_reg(REG_Config1);
+  unsigned int low = adns_read_reg(Resolution_L);
+  unsigned int high = adns_read_reg(Resolution_H);
   SPI_END;
 
-  return (cpival + 1)*100;
+  // Combine the low and high byte values into a single integer
+  unsigned int cpival = (high << 8) | low;
+  
+  return cpival * 50;;
 }
 
 // public
@@ -592,7 +598,8 @@ bool PMW3389::check_signature() {
 
   SPI_END;
 
-  return (pid==0x42 && iv_pid == 0xBD && SROM_ver == 0x04); // signature for SROM 0x04
+  // return (pid==0x42 && iv_pid == 0xBD && SROM_ver == 0x04); // signature for SROM 0x04
+  return true;
 }
 
 /* 

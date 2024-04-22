@@ -17,7 +17,7 @@
 #endif
 
 // User define values
-#define DEFAULT_CPI  800
+#define DEFAULT_CPI  600
 #define SENSOR_DISTANCE 50.83  // in mm
 
 #define MAX_CPI  16000
