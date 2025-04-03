@@ -22,7 +22,7 @@
 #ifndef ADVMOUSE_h
 #define ADVMOUSE_h
 
-#include "HID.h"
+#include "hid.h"
 
 #if !defined(_USING_HID)
 
