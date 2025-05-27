@@ -75,6 +75,9 @@ bool PMW3389::begin(int PIN_SCLK, int PIN_MISO, int PIN_MOSI, uint16_t ss_pin, u
   upload_firmware();
   // END_COM;
 
+  writeRegister(REG_Lift_Config, 0x03);  // change Lift off detection height to 3 mm
+  writeRegister(REG_Min_SQ_Run, 0x06);
+
   delay(10);
   setCPI(CPI);
   
