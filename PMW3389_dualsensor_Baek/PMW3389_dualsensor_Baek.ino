@@ -352,34 +352,23 @@ void setSoftCPI(int CPI)
 // Button state checkup routine, fast debounce is implemented.
 void check_buttons_state()
 {
-  unsigned long elapsed = micros() - lastButtonCheck;
+  static const uint8_t PRESS_MASK = 0x01;    // Check only the last bit for instant press
+  static const uint8_t RELEASE_MASK = 0x0F;  // Check last 4 bits for release (still need some stability)
+  static const uint8_t PRESS_THRESHOLD = 0x00;    // Single 0 bit triggers press
+  static const uint8_t RELEASE_THRESHOLD = 0x0F;  // All bits must be 1 for release
 
-  // Update at a period of 1/8 of the DEBOUNCE time
-  if (elapsed < (DEBOUNCE * 1000UL / 8))
-    return;
+  unsigned long currentTime = micros();
+  if (currentTime - lastButtonCheck < (DEBOUNCE * 1000UL / 8)) return;
+  lastButtonCheck = currentTime;
 
-  lastButtonCheck = micros();
+  for (int i = 0; i < NUMBTN; i++) {
+    btn_buffers[i] = (btn_buffers[i] << 1) | digitalRead(btn_pins[i]);
 
-  // Fast Debounce (works with mimimal latency most of the time)
-  for (int i = 0; i < NUMBTN ; i++)
-  {
-    int state = digitalRead(btn_pins[i]);
-    btn_buffers[i] = btn_buffers[i] << 1 | state;
-
-    // btn_buffer detects 0 when the switch shorts, 1 when opens.
-    if (btn_state[i] == false &&
-        (btn_buffers[i] == 0xFE || btn_buffers[i] == 0x00) )
-      // 0xFE = 0b1111:1110 button pressed for the first time (for fast press detection w. minimum debouncing time)
-      // 0x00 = 0b0000:0000 force press when consequent on state (for the DEBOUNCE time) is detected
-    {
+    if (!btn_state[i] && (btn_buffers[i] & PRESS_MASK) == PRESS_THRESHOLD) {
       MOUSE_PRESS(btn_keys[i]);
       btn_state[i] = true;
     }
-    else if ( btn_state[i] == true &&
-              (btn_buffers[i] == 0x07 || btn_buffers[i] == 0xFF) )
-      // 0x07 = 0b0000:0111 button released consequently 3 times after stabilized press (not as fast as press to prevent accidental releasing during drag)
-      // 0xFF = 0b1111:1111 force release when consequent off state (for the DEBOUNCE time) is detected
-    {
+    else if (btn_state[i] && (btn_buffers[i] & RELEASE_MASK) == RELEASE_THRESHOLD) {
       MOUSE_RELEASE(btn_keys[i]);
       btn_state[i] = false;
     }
