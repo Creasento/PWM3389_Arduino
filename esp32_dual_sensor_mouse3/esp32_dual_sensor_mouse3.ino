@@ -288,10 +288,11 @@ void buttons_init()
 // Button state checkup routine, fast debounce is implemented.
 void check_buttons_state()
 {
-  static const uint8_t PRESS_MASK = 0x01;    // Check only the last bit for instant press
-  static const uint8_t RELEASE_MASK = 0x0F;  // Check last 4 bits for release (still need some stability)
-  static const uint8_t PRESS_THRESHOLD = 0x00;    // Single 0 bit triggers press
-  static const uint8_t RELEASE_THRESHOLD = 0x0F;  // All bits must be 1 for release
+  static const uint8_t PRESS_MASK = 0b00001111;    // Check only the last bit for instant press
+  static const uint8_t PRESS_THRESHOLD = 0b00001110;    // Single 0 bit after three consequent 1s triggers press
+  
+  static const uint8_t RELEASE_MASK = 0b00001111;  // Check last 4 bits for release (still need some stability)
+  static const uint8_t RELEASE_THRESHOLD = 0b00001111;  // All bits must be 1 for release (after three consequent 0 bits)
 
   unsigned long currentTime = micros();
   if (currentTime - lastButtonCheck < (DEBOUNCE * 1000UL / 8)) return;
