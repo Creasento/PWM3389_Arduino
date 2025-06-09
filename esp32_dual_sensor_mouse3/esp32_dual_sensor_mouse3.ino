@@ -292,7 +292,7 @@ void check_buttons_state()
   static const uint8_t PRESS_THRESHOLD = 0b00001110;    // Single 0 bit after three consequent 1s triggers press
   
   static const uint8_t RELEASE_MASK = 0b00001111;  // Check last 4 bits for release (still need some stability)
-  static const uint8_t RELEASE_THRESHOLD = 0b00001111;  // All bits must be 1 for release (after three consequent 0 bits)
+  static const uint8_t RELEASE_THRESHOLD = 0b00001111;  // All bits must be 1 for release 
 
   unsigned long currentTime = micros();
   if (currentTime - lastButtonCheck < (DEBOUNCE * 1000UL / 8)) return;
